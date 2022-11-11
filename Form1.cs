@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace MediaRegister
 {
     public partial class Form1 : Form
@@ -57,6 +59,26 @@ namespace MediaRegister
                 filterVal = 2;
             }
             tbxResults.Text = extensions.Write(filterVal);
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.DefaultExt = ".txt";
+            saveFileDialog1.Filter = "Text File|*.txt|PDF file|*.pdf|Word File|*.doc";
+            DialogResult dr = saveFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+            {
+                File.WriteAllText(saveFileDialog1.FileName, tbxResults.Text);
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                // only adds the text need to add meda to list
+                tbxResults.Text = File.ReadAllText(openFileDialog1.FileName);
+            }
         }
     }
 }

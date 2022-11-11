@@ -50,22 +50,31 @@
             this.rbtnFilms = new System.Windows.Forms.RadioButton();
             this.rbtnBooks = new System.Windows.Forms.RadioButton();
             this.rbtnAll = new System.Windows.Forms.RadioButton();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1.SuspendLayout();
             this.addBook.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nrBookLength)).BeginInit();
             this.addFilm.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nrFilmLength)).BeginInit();
             this.gbxFilter.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.addBook);
             this.tabControl1.Controls.Add(this.addFilm);
-            this.tabControl1.Location = new System.Drawing.Point(20, 13);
+            this.tabControl1.Location = new System.Drawing.Point(20, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(245, 260);
+            this.tabControl1.Size = new System.Drawing.Size(245, 246);
             this.tabControl1.TabIndex = 0;
             // 
             // addBook
@@ -80,7 +89,7 @@
             this.addBook.Location = new System.Drawing.Point(4, 24);
             this.addBook.Name = "addBook";
             this.addBook.Padding = new System.Windows.Forms.Padding(3);
-            this.addBook.Size = new System.Drawing.Size(237, 232);
+            this.addBook.Size = new System.Drawing.Size(237, 218);
             this.addBook.TabIndex = 0;
             this.addBook.Text = "Lägg till bok";
             this.addBook.UseVisualStyleBackColor = true;
@@ -160,7 +169,7 @@
             this.addFilm.Location = new System.Drawing.Point(4, 24);
             this.addFilm.Name = "addFilm";
             this.addFilm.Padding = new System.Windows.Forms.Padding(3);
-            this.addFilm.Size = new System.Drawing.Size(237, 232);
+            this.addFilm.Size = new System.Drawing.Size(237, 218);
             this.addFilm.TabIndex = 1;
             this.addFilm.Text = "Lägg till film";
             this.addFilm.UseVisualStyleBackColor = true;
@@ -231,11 +240,11 @@
             // tbxResults
             // 
             this.tbxResults.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.tbxResults.Location = new System.Drawing.Point(281, 37);
+            this.tbxResults.Location = new System.Drawing.Point(281, 51);
             this.tbxResults.Multiline = true;
             this.tbxResults.Name = "tbxResults";
             this.tbxResults.ReadOnly = true;
-            this.tbxResults.Size = new System.Drawing.Size(225, 236);
+            this.tbxResults.Size = new System.Drawing.Size(225, 222);
             this.tbxResults.TabIndex = 1;
             // 
             // gbxFilter
@@ -286,6 +295,57 @@
             this.rbtnAll.UseVisualStyleBackColor = true;
             this.rbtnAll.CheckedChanged += new System.EventHandler(this.rbtnAll_CheckedChanged);
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(525, 24);
+            this.menuStrip1.TabIndex = 3;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.openToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Text = "New";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -294,7 +354,9 @@
             this.Controls.Add(this.gbxFilter);
             this.Controls.Add(this.tbxResults);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
             this.tabControl1.ResumeLayout(false);
@@ -306,6 +368,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nrFilmLength)).EndInit();
             this.gbxFilter.ResumeLayout(false);
             this.gbxFilter.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,5 +399,13 @@
         private RadioButton rbtnFilms;
         private RadioButton rbtnBooks;
         private RadioButton rbtnAll;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private SaveFileDialog saveFileDialog1;
+        private OpenFileDialog openFileDialog1;
     }
 }
