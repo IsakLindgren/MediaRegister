@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MediaRegister
@@ -14,7 +17,7 @@ namespace MediaRegister
 
         private void btnAddBook_Click(object sender, EventArgs e)
         {
-            Media.media.Add(new Book(tbxBookTitle.Text, tbxWriter.Text, nrBookLength.Value.DecimalToInt()));
+            Media.media.Insert(0, new Book(tbxBookTitle.Text, tbxWriter.Text, nrBookLength.Value.DecimalToInt()));
 
             tbxBookTitle.Text = string.Empty;
             tbxWriter.Text = string.Empty;
@@ -63,22 +66,111 @@ namespace MediaRegister
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.DefaultExt = ".txt";
-            saveFileDialog1.Filter = "Text File|*.txt|PDF file|*.pdf|Word File|*.doc";
+            saveFileDialog1.DefaultExt = ".bin";
+            saveFileDialog1.Filter = "binary| *.bin";
             DialogResult dr = saveFileDialog1.ShowDialog();
             if (dr == DialogResult.OK)
             {
-                File.WriteAllText(saveFileDialog1.FileName, tbxResults.Text);
+                try
+                {
+                    Debug.WriteLine("Binary Writer");
+
+                    string fileName = saveFileDialog1.FileName;
+
+                    Encoding utf8 = Encoding.UTF8;
+
+                    using (BinaryWriter binWriter =
+                        new BinaryWriter(new FileStream(fileName, FileMode.Create), utf8))
+                    {
+                        binWriter.Write(Media.media.Count());
+
+                        foreach (var media in Media.media)
+                        {
+                            binWriter.Write(media._MediaType);
+
+                            binWriter.Write(media._Title);
+                            binWriter.Write(media.GetCreator());
+                            binWriter.Write(media.GetLength());
+                            
+                        }
+                        binWriter.Close();
+                        
+                    }
+                    Debug.WriteLine("Data Written!");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
             }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            openFileDialog1.Filter = "Binary|*.bin";
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
             {
-                // only adds the text need to add meda to list
-                tbxResults.Text = File.ReadAllText(openFileDialog1.FileName);
+                Media.media.Clear();
+                tbxResults.Text = String.Empty;
+
+                try
+                {
+                    Debug.WriteLine("Binary Reader");
+
+                    string fileName = openFileDialog1.FileName;
+
+                    Encoding utf8 = Encoding.UTF8;
+
+                    using (BinaryReader binReader =
+                        new BinaryReader(new FileStream(fileName, FileMode.Open), utf8))
+                    {
+                        int listLength = binReader.ReadInt32();
+
+                        for (int i = 0; i < listLength; i++)
+                        {
+                            int mediatype = binReader.ReadInt32();
+                            string Title = binReader.ReadString();
+
+                            if (mediatype == 0)
+                            {
+                                string Author = binReader.ReadString();
+                                int pages = binReader.ReadInt32();
+
+                                Media.media.Add(new Book(Title, Author, pages));
+                            }
+
+                            if (mediatype == 1)
+                            {
+                                string Director = binReader.ReadString();
+                                int Length = binReader.ReadInt32();
+
+                                Media.media.Add(new Film(Title, Director, Length));
+                            }
+                        }
+                        binReader.Close();
+                    }
+                    Debug.WriteLine("Data Read!");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
+
+                Debug.Write("File loded");
+                tbxResults.Text = Media.Write();
             }
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Media.media.Clear();
+            tbxResults.Text = String.Empty;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

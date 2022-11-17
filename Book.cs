@@ -27,5 +27,13 @@ namespace MediaRegister
             return bookString;
         }
 
+        public override string GetCreator()
+        {
+            return _Author;
+        }
+        public override int GetLength()
+        {
+            return _NrOfPages;
+        }
     }
 }
