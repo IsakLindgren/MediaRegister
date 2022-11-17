@@ -67,7 +67,7 @@ namespace MediaRegister
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFileDialog1.DefaultExt = ".bin";
-            saveFileDialog1.Filter = "";
+            saveFileDialog1.Filter = "binary| *.bin";
             DialogResult dr = saveFileDialog1.ShowDialog();
             if (dr == DialogResult.OK)
             {
@@ -77,10 +77,10 @@ namespace MediaRegister
 
                     string fileName = saveFileDialog1.FileName;
 
-                    Encoding ascii = Encoding.UTF8;
+                    Encoding utf8 = Encoding.UTF8;
 
                     using (BinaryWriter binWriter =
-                        new BinaryWriter(new FileStream(fileName, FileMode.Create), ascii))
+                        new BinaryWriter(new FileStream(fileName, FileMode.Create), utf8))
                     {
                         binWriter.Write(Media.media.Count());
 
@@ -97,7 +97,6 @@ namespace MediaRegister
                         
                     }
                     Debug.WriteLine("Data Written!");
-                    Debug.WriteLine("");
                 }
                 catch (IOException ioexp)
                 {
@@ -108,18 +107,23 @@ namespace MediaRegister
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            openFileDialog1.Filter = "Binary|*.bin";
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
             {
+                Media.media.Clear();
+                tbxResults.Text = String.Empty;
+
                 try
                 {
                     Debug.WriteLine("Binary Reader");
 
                     string fileName = openFileDialog1.FileName;
 
-                    Encoding ascii = Encoding.UTF8;
+                    Encoding utf8 = Encoding.UTF8;
 
                     using (BinaryReader binReader =
-                        new BinaryReader(new FileStream(fileName, FileMode.Open), ascii))
+                        new BinaryReader(new FileStream(fileName, FileMode.Open), utf8))
                     {
                         int listLength = binReader.ReadInt32();
 
@@ -147,7 +151,6 @@ namespace MediaRegister
                         binReader.Close();
                     }
                     Debug.WriteLine("Data Read!");
-                    Debug.WriteLine("");
                 }
                 catch (IOException ioexp)
                 {
@@ -157,6 +160,17 @@ namespace MediaRegister
                 Debug.Write("File loded");
                 tbxResults.Text = Media.Write();
             }
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Media.media.Clear();
+            tbxResults.Text = String.Empty;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
