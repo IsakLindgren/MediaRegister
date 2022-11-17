@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MediaRegister
@@ -14,7 +15,7 @@ namespace MediaRegister
 
         private void btnAddBook_Click(object sender, EventArgs e)
         {
-            Media.media.Add(new Book(tbxBookTitle.Text, tbxWriter.Text, nrBookLength.Value.DecimalToInt()));
+            Media.media.Insert(0, new Book(tbxBookTitle.Text, tbxWriter.Text, nrBookLength.Value.DecimalToInt()));
 
             tbxBookTitle.Text = string.Empty;
             tbxWriter.Text = string.Empty;
@@ -77,7 +78,33 @@ namespace MediaRegister
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 // only adds the text need to add meda to list
-                tbxResults.Text = File.ReadAllText(openFileDialog1.FileName);
+                //tbxResults.Text = File.ReadAllText(openFileDialog1.FileName);
+
+                string file = File.ReadAllText(openFileDialog1.FileName);
+                string Title = string.Empty;
+
+                // if file is film
+                if (file.LastIndexOf("n") == file.LastIndexOf(")")-1)
+                {
+                    Title = file.Split("(")[0];
+
+                    char[] separators = new char[] { '(', ',' };
+                    string Director = file.Split(separators)[1];
+                    int length = int.Parse(file.Split());
+                }
+
+                // if file is book
+                if (file.LastIndexOf("r") == file.LastIndexOf(")") - 1)
+                {
+                    Title = file.Split("(")[0];
+
+                    char[] separators = new char[] { '(', ',' };
+                    string Author = file.Split(separators)[1];
+                }
+
+                tbxResults.Text = Title;
+
+
             }
         }
     }
