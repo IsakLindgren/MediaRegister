@@ -55,6 +55,14 @@ namespace MediaRegister
 
             return result;
         }
+        public virtual string GetCreator()
+        {
+            return String.Empty;
+        }
+        public virtual int GetLength()
+        {
+            return 0;
+        }
 
     }
 }

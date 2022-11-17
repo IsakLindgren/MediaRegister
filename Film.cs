@@ -26,5 +26,13 @@ namespace MediaRegister
             return filmString;
         }
 
+        public override string GetCreator()
+        {
+            return _Director;
+        }
+        public override int GetLength()
+        {
+            return _Length;
+        }
     }
 }

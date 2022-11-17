@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -64,12 +66,43 @@ namespace MediaRegister
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.DefaultExt = ".txt";
-            saveFileDialog1.Filter = "Text File|*.txt|PDF file|*.pdf|Word File|*.doc";
+            //needs new file ext and filter for binary file
+            saveFileDialog1.DefaultExt = ".bin";
+            saveFileDialog1.Filter = "";
             DialogResult dr = saveFileDialog1.ShowDialog();
             if (dr == DialogResult.OK)
             {
-                File.WriteAllText(saveFileDialog1.FileName, tbxResults.Text);
+                try
+                {
+                    Debug.WriteLine("Binary Writer");
+
+                    string fileName = saveFileDialog1.FileName;
+
+                    Encoding ascii = Encoding.UTF8;
+
+                    using (BinaryWriter binWriter =
+                        new BinaryWriter(new FileStream(fileName, FileMode.Create), ascii))
+                    {
+                        foreach(var media in Media.media)
+                        {
+                            // Write string   
+                            binWriter.Write(media._MediaType);
+
+                            binWriter.Write(media._Title);
+                            binWriter.Write(media.GetCreator());
+                            binWriter.Write(media.GetLength());
+                            
+                        }
+                        binWriter.Close();
+                        
+                    }
+                    Debug.WriteLine("Data Written!");
+                    Debug.WriteLine("");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
             }
         }
 
@@ -79,32 +112,47 @@ namespace MediaRegister
             {
                 // only adds the text need to add meda to list
                 //tbxResults.Text = File.ReadAllText(openFileDialog1.FileName);
-
-                string file = File.ReadAllText(openFileDialog1.FileName);
-                string Title = string.Empty;
-
-                // if file is film
-                if (file.LastIndexOf("n") == file.LastIndexOf(")")-1)
+                try
                 {
-                    Title = file.Split("(")[0];
+                    Debug.WriteLine("Binary Reader");
 
-                    char[] separators = new char[] { '(', ',' };
-                    string Director = file.Split(separators)[1];
-                    int length = int.Parse(file.Split());
+                    string fileName = openFileDialog1.FileName;
+
+                    Encoding ascii = Encoding.UTF8;
+
+                    using (BinaryReader binReader =
+                        new BinaryReader(new FileStream(fileName, FileMode.Open), ascii))
+                    {
+                        int mediatype = binReader.ReadInt32();
+                        string Title = binReader.ReadString();
+
+                        if (mediatype == 0)
+                        {
+                            string Author = binReader.ReadString();
+                            int pages = binReader.ReadInt32();
+                            
+                            Media.media.Add(new Book(Title, Author, pages));
+                        }
+
+                        if (mediatype == 1)
+                        {
+                            string Director = binReader.ReadString();
+                            int Length = binReader.ReadInt32();
+
+                            Media.media.Add(new Film(Title, Director, Length));
+                        }
+
+                        binReader.Close();
+                    }
+                    Debug.WriteLine("Data Read!");
+                    Debug.WriteLine("");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
                 }
 
-                // if file is book
-                if (file.LastIndexOf("r") == file.LastIndexOf(")") - 1)
-                {
-                    Title = file.Split("(")[0];
-
-                    char[] separators = new char[] { '(', ',' };
-                    string Author = file.Split(separators)[1];
-                }
-
-                tbxResults.Text = Title;
-
-
+                Media.Write();
             }
         }
     }
