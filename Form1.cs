@@ -1,7 +1,9 @@
+using Microsoft.VisualBasic.ApplicationServices;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MediaRegister
 {
@@ -10,10 +12,178 @@ namespace MediaRegister
         public Form1()
         {
             InitializeComponent();
+            SaveLastFile();
+            openFile(lastOpened);
+        }
+
+        string lastOpened = string.Empty;
+
+        public void SaveLastFile()
+        {
+            string filepath = "C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin";
+            if (!File.Exists(filepath))
+            {
+                //creates MediaRegisterConfig.bin if it doesnt exist
+                try
+                {
+                    Debug.WriteLine("Binary Writer");
+
+                    string fileName = "C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin";
+
+                    Encoding utf8 = Encoding.UTF8;
+
+                    using (BinaryWriter binWriter =
+                        new BinaryWriter(new FileStream(fileName, FileMode.Create), utf8))
+                    {
+                        binWriter.Write(lastOpened);
+
+                        binWriter.Close();
+
+                    }
+                    Debug.WriteLine("Data Written!");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
+            }
+            else
+            {
+                // reads MediaRegisterConfig.bin
+                try
+                {
+                    Debug.WriteLine("Binary Reader");
+
+                    Encoding utf8 = Encoding.UTF8;
+
+                    using (BinaryReader binReader =
+                        new BinaryReader(new FileStream("C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin", FileMode.Open), utf8))
+                    {
+                        lastOpened = binReader.ReadString();
+
+                        binReader.Close();
+                    }
+                    Debug.WriteLine("Data Read!");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
+            }
+        }
+        public void SaveLastFile(string lastopened)
+        {
+            lastOpened = lastopened;
+            string filepath = "C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin";
+            if (!File.Exists(filepath))
+            {
+                //creates MediaRegisterConfig.bin if it doesnt exist
+                try
+                {
+                    Debug.WriteLine("Binary Writer");
+
+                    string fileName = "C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin";
+
+                    Encoding utf8 = Encoding.UTF8;
+
+                    using (BinaryWriter binWriter =
+                        new BinaryWriter(new FileStream(fileName, FileMode.Create), utf8))
+                    {
+                        binWriter.Write(lastOpened);
+
+                        binWriter.Close();
+
+                    }
+                    Debug.WriteLine("Data Written!");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
+            }
+            else
+            {
+                // reads MediaRegisterConfig.bin
+                try
+                {
+                    Debug.WriteLine("Binary Reader");
+
+                    Encoding utf8 = Encoding.UTF8;
+
+                    using (BinaryWriter binWrite =
+                        new BinaryWriter(new FileStream("C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin", FileMode.Open), utf8))
+                    {
+                        binWrite.Write(lastOpened);
+
+                        binWrite.Close();
+                    }
+                    Debug.WriteLine("Data Read!");
+                }
+                catch (IOException ioexp)
+                {
+                    Debug.WriteLine("Error: {0}", ioexp.Message);
+                }
+            }
+        }
+
+        private void openFile(string fileName)
+        {
+            Media.media.Clear();
+            tbxResults.Text = String.Empty;
+
+            try
+            {
+                Debug.WriteLine("Binary Reader");
+
+                Encoding utf8 = Encoding.UTF8;
+
+                using (BinaryReader binReader =
+                    new BinaryReader(new FileStream(fileName, FileMode.Open), utf8))
+                {
+                    int listLength = binReader.ReadInt32();
+
+                    for (int i = 0; i < listLength; i++)
+                    {
+                        int mediatype = binReader.ReadInt32();
+                        string Title = binReader.ReadString();
+
+                        if (mediatype == 0)
+                        {
+                            string Author = binReader.ReadString();
+                            int pages = binReader.ReadInt32();
+
+                            Media.media.Add(new Book(Title, Author, pages));
+                        }
+
+                        if (mediatype == 1)
+                        {
+                            string Director = binReader.ReadString();
+                            int Length = binReader.ReadInt32();
+
+                            Media.media.Add(new Film(Title, Director, Length));
+                        }
+                    }
+                    binReader.Close();
+                }
+                Debug.WriteLine("Data Read!");
+                SaveLastFile(fileName);
+
+                
+
+
+            }
+            catch (IOException ioexp)
+            {
+                Debug.WriteLine("Error: {0}", ioexp.Message);
+            }
+
+            Debug.Write("File loded");
+            tbxResults.Text = Media.Write();
         }
 
         // filter int (0) for all (1) Books (2) Films
         int filterVal = 0;
+        
 
         private void btnAddBook_Click(object sender, EventArgs e)
         {
@@ -102,6 +272,9 @@ namespace MediaRegister
                 {
                     Debug.WriteLine("Error: {0}", ioexp.Message);
                 }
+
+                SaveLastFile(saveFileDialog1.FileName);
+
             }
         }
 
@@ -111,54 +284,7 @@ namespace MediaRegister
             DialogResult dr = openFileDialog1.ShowDialog();
             if (dr == DialogResult.OK)
             {
-                Media.media.Clear();
-                tbxResults.Text = String.Empty;
-
-                try
-                {
-                    Debug.WriteLine("Binary Reader");
-
-                    string fileName = openFileDialog1.FileName;
-
-                    Encoding utf8 = Encoding.UTF8;
-
-                    using (BinaryReader binReader =
-                        new BinaryReader(new FileStream(fileName, FileMode.Open), utf8))
-                    {
-                        int listLength = binReader.ReadInt32();
-
-                        for (int i = 0; i < listLength; i++)
-                        {
-                            int mediatype = binReader.ReadInt32();
-                            string Title = binReader.ReadString();
-
-                            if (mediatype == 0)
-                            {
-                                string Author = binReader.ReadString();
-                                int pages = binReader.ReadInt32();
-
-                                Media.media.Add(new Book(Title, Author, pages));
-                            }
-
-                            if (mediatype == 1)
-                            {
-                                string Director = binReader.ReadString();
-                                int Length = binReader.ReadInt32();
-
-                                Media.media.Add(new Film(Title, Director, Length));
-                            }
-                        }
-                        binReader.Close();
-                    }
-                    Debug.WriteLine("Data Read!");
-                }
-                catch (IOException ioexp)
-                {
-                    Debug.WriteLine("Error: {0}", ioexp.Message);
-                }
-
-                Debug.Write("File loded");
-                tbxResults.Text = Media.Write();
+                openFile(openFileDialog1.FileName);
             }
         }
 
@@ -171,6 +297,13 @@ namespace MediaRegister
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void openLastFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveLastFile();
+            openFile(lastOpened);
+            
         }
     }
 }
