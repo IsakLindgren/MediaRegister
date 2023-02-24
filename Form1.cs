@@ -18,6 +18,8 @@ namespace MediaRegister
 
         string lastOpened = string.Empty;
 
+        Font font;
+
         public void SaveLastFile()
         {
             string filepath = "C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin";
@@ -35,8 +37,7 @@ namespace MediaRegister
                     using (BinaryWriter binWriter =
                         new BinaryWriter(new FileStream(fileName, FileMode.Create), utf8))
                     {
-                        binWriter.Write(lastOpened);
-
+                        binWriter.Write(new FontConverter().ConvertToString(font));
                         binWriter.Close();
 
                     }
@@ -60,6 +61,8 @@ namespace MediaRegister
                         new BinaryReader(new FileStream("C:\\Users\\isalin28\\OneDrive - Lärande\\Dokument\\MediaRegisterConfig.bin", FileMode.Open), utf8))
                     {
                         lastOpened = binReader.ReadString();
+
+                        font = new FontConverter().ConvertFromString(binReader.ReadString()) as Font;
 
                         binReader.Close();
                     }
@@ -103,7 +106,7 @@ namespace MediaRegister
             }
             else
             {
-                // reads MediaRegisterConfig.bin
+                // writes to MediaRegisterConfig.bin
                 try
                 {
                     Debug.WriteLine("Binary Reader");
@@ -258,7 +261,7 @@ namespace MediaRegister
                         {
                             binWriter.Write(media._MediaType);
 
-                            binWriter.Write(media._Title);
+                            binWriter.Write(media.GetTitle());
                             binWriter.Write(media.GetCreator());
                             binWriter.Write(media.GetLength());
                             
@@ -304,6 +307,17 @@ namespace MediaRegister
             SaveLastFile();
             openFile(lastOpened);
             
+        }
+
+        private void fontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = fontDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+            {
+                font = fontDialog1.Font;
+                tbxResults.Font = fontDialog1.Font;
+
+            }
         }
     }
 }

@@ -23,8 +23,7 @@ namespace MediaRegister
 
         public override string ToString()
         {
-            string bookString = _Title + " (" + _Author + ", " + _NrOfPages + " sidor" + ")";
-            return bookString;
+            return $"{_Title} ({_Author}, {_NrOfPages} sidor)";
         }
 
         public override string GetCreator()

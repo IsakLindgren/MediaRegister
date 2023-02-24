@@ -22,8 +22,7 @@ namespace MediaRegister
 
         public override string ToString()
         {
-            string filmString = _Title + " (" + _Director + ", " + _Length + " min" + ")";
-            return filmString;
+            return $"{_Title} ({_Director}, {_Length} min)";
         }
 
         public override string GetCreator()

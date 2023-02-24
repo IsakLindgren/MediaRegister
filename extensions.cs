@@ -12,8 +12,7 @@ namespace MediaRegister
 
         public static int DecimalToInt(this decimal value)
         {
-            int result = Decimal.ToInt32(value);
-            return result;
+            return Decimal.ToInt32(value);
         }
 
         public static string Write(int filterVal)

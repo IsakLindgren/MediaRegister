@@ -9,7 +9,7 @@ namespace MediaRegister
     internal class Media
     {
 
-        public string _Title;
+        protected string _Title;
 
         // mediatype is to sort into books(0) and Films(1)
         public int _MediaType;
@@ -54,6 +54,10 @@ namespace MediaRegister
             }
 
             return result;
+        }
+        public string GetTitle()
+        {
+            return _Title;
         }
         public virtual string GetCreator()
         {
